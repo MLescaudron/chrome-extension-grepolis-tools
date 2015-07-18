@@ -1,0 +1,21 @@
+{
+  "name": "First",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "First extension",
+  "browser_action": {
+    "default_icon": "128.png",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+  {
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["jquery.js", "essai.js"]
+  }
+],
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/"
+  ]
+
+}
