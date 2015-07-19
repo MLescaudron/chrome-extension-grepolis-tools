@@ -1,0 +1,8 @@
+#grepolis_tools_inject {
+    width: 350px;
+    height: 25px;
+}
+
+#starting, #looting, #time_to_end {
+    display: inline-block;
+}
