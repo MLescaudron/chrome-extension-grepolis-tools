@@ -15,14 +15,15 @@
 
   "content_scripts": [
   {
-    "matches": ["http://*/*", "https://*/*"],
+    "matches": ["http://*.grepolis.com/*", "https://*.grepolis.com/*"],
     "js": ["scripts/jquery.js", "scripts/grepolis_tools.js"],
     "css": ["css/grepolis_tools.css"]
   }
 ],
   "permissions": [
     "activeTab",
-    "http://*/*"
+    "http://*.grepolis.com/*",
+    "https://*.grepolis.com/*"
   ],
   "web_accessible_resources": ["scripts/grepolis_function.js"]
 }
