@@ -1,10 +1,9 @@
 {
-  //Required
   "name": "Grepolis Tools",
   "version": "1.0",
   "manifest_version": 2,
   "author" : "Mathieu Lescaudron",
-  "description": "Get or loot automatically cities resources every 5minutes",
+  "description": "Get or loot automatically cities resources every 5 minutes",
 
   "icons":{
     "128": "images/icon128.png"
@@ -25,7 +24,5 @@
     "activeTab",
     "http://*/*"
   ],
-
   "web_accessible_resources": ["scripts/grepolis_function.js"]
-
 }
