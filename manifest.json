@@ -7,18 +7,18 @@
   "description": "Get or loot automatically cities resources every 5minutes",
 
   "icons":{
-    "128": "icon128.png"
+    "128": "images/icon128.png"
   },
 
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "html/popup.html"
   },
 
   "content_scripts": [
   {
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["jquery.js", "grepolis_tools.js"],
-    "css": ["grepolis_tools.css"]
+    "js": ["scripts/jquery.js", "scripts/grepolis_tools.js"],
+    "css": ["css/grepolis_tools.css"]
   }
 ],
   "permissions": [
@@ -26,6 +26,6 @@
     "http://*/*"
   ],
 
-  "web_accessible_resources": ["grepolis_function.js"]
+  "web_accessible_resources": ["scripts/grepolis_function.js"]
 
 }
