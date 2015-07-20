@@ -34,6 +34,7 @@ function lootingGreprolisResources(){
 
     $('#time_to_end').html('Looted ! - Wait pls');
     var btn_looting = $('#fto_pillage');
+    btn_looting.click();
     btn_length = (btn_looting) ? btn_looting.length : 0;
 
     setTimeout(validGreprolisResources, 4000);
