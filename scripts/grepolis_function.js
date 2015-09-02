@@ -92,6 +92,7 @@ function ReadyToRestart(MaxTime,time){
     var town = 0;
     var id = 0;
 
+    // @todo to check
     for(var id = 0;id < $('.farmtown_owned_on_same_island').length; id ++) {
 
         town = $('.farmtown_owned_on_same_island')[id];
