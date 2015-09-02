@@ -39,7 +39,7 @@ function lootingGreprolisResources(){
 
     setTimeout(validGreprolisResources, 4000);
 }
-
+w($('div.farm_claim')[0]).call('claimLoad', '10969', 'normal', 1200, 94, false, 1437513310);
 /**
  * Valide the page to get resources
  */
@@ -87,6 +87,31 @@ function ReadyToRestart(MaxTime,time){
         }), 1000);
     } else {
         openGreprolisResources();
+    }
+
+    var town = 0;
+    var id = 0;
+
+    for(var id = 0;id < $('.farmtown_owned_on_same_island').length; id ++) {
+
+        town = $('.farmtown_owned_on_same_island')[id];
+        townId = $(town).attr('id').replace('farm_town_','');
+
+        $.ajax({
+            url: 'https://fr87.grepolis.com/game/farm_town_info?town_id='+window.Game.townId+'&action=claim_load&h='+window.Game.csrfToken,
+            data: {
+                'json': '{"target_id":"'+townId+'","claim_type":"normal","time":300,"town_id":'+window.Game.townId+',"nl_init":true}',
+
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (json) {
+                console.log(json)
+            },
+            error: function (e, x, t) {
+                console.log('error')
+            },
+        });
     }
 
 }
