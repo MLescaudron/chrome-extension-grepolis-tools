@@ -1,117 +1,76 @@
 /**
+ * How many second to wait
+ * @type {number}
+ */
+var second = 301;
+
+/**
  *  Start the automate
  */
 $('button#starting').on('click', function () {
-    openGreprolisResources();
+    readyToRestart();
 });
 
 /**
- * Open the cities pages to get or loot their resources
- */
-function openGreprolisResources() {
-
-    $('#time_to_end').html('Started ! - Wait pls')
-
-    var btn_open = $('a[name="farm_town_overview"]');
-    btn_length = (btn_open) ? btn_open.length : 0;
-
-    if(btn_length > 0) {
-        btn_open[btn_length - 1].click();
-    }
-
-    if ($('#looting').is(':checked')) {
-        setTimeout(lootingGreprolisResources, 4000);
-    } else {
-        setTimeout(validGreprolisResources, 4000);
-    }
-
-}
-
-/**
- * Click on loot page
- */
-function lootingGreprolisResources(){
-
-    $('#time_to_end').html('Looted ! - Wait pls');
-    var btn_looting = $('#fto_pillage');
-    btn_looting.click();
-    btn_length = (btn_looting) ? btn_looting.length : 0;
-
-    setTimeout(validGreprolisResources, 4000);
-}
-w($('div.farm_claim')[0]).call('claimLoad', '10969', 'normal', 1200, 94, false, 1437513310);
-/**
- * Valide the page to get resources
- */
-function validGreprolisResources(){
-    $('#time_to_end').html('Validated ! - Wait pls');
-    var btn_valid = $('a.button#fto_claim_button');
-
-    btn_length = (btn_valid) ? btn_valid.length : 0;
-    if(btn_length > 0) {
-        btn_valid[btn_length - 1].click();
-    }
-
-    setTimeout(closeGreprolisResources, 4000);
-}
-
-/**
- * Close the page to continue to play
- */
-function closeGreprolisResources(){
-
-    var btn_close = $('a.ui-dialog-titlebar-close');
-    btn_length = (btn_close) ? btn_close.length : 0;
-
-    if(btn_length > 0) {
-        btn_close[btn_length - 1].click();
-    }
-
-    //Restart after 5min
-    ReadyToRestart(300000,0);
-}
-
-/**
  * Restart the automate
- * @param MaxTime
- * @param time
- * @constructor
  */
-function ReadyToRestart(MaxTime,time){
+function readyToRestart() {
 
-    if (time < MaxTime) {
-        $('#time_to_end').html('Time to restart : ' + ((MaxTime - time) / 1000) + 's')
-        setTimeout((function () {
-            ReadyToRestart(MaxTime,time + 1000);
-
-        }), 1000);
-    } else {
-        openGreprolisResources();
-    }
+    var action = ($('#looting').is(':checked')) ? 'double' : 'normal';
 
     var town = 0;
     var id = 0;
 
-    for(var id = 0;id < $('.farmtown_owned_on_same_island').length; id ++) {
+    var wood = parseInt($('.wood .amount').text());
+    var stone = parseInt($('.stone .amount').text());
+    var iron = parseInt($('.iron .amount').text());
+
+    for (var id = 0; id < $('.farmtown_owned_on_same_island').length; id++) {
 
         town = $('.farmtown_owned_on_same_island')[id];
-        townId = $(town).attr('id').replace('farm_town_','');
+        townId = $(town).attr('id').replace('farm_town_', '');
 
         $.ajax({
-            url: 'https://fr87.grepolis.com/game/farm_town_info?town_id='+window.Game.townId+'&action=claim_load&h='+window.Game.csrfToken,
+            url: 'https://' + window.Game.world_id + '.grepolis.com/game/farm_town_info?town_id=' + window.Game.townId + '&action=claim_load&h=' + window.Game.csrfToken,
             data: {
-                'json': '{"target_id":"'+townId+'","claim_type":"normal","time":300,"town_id":'+window.Game.townId+',"nl_init":true}',
+                'json': '{"target_id":"' + townId + '","claim_type":"'+action +'","time":300,"town_id":' + window.Game.townId + ',"nl_init":true}',
 
             },
             type: 'post',
             dataType: 'json',
             success: function (json) {
-                console.log(json)
+                console.log(json);
+
+                wood += 20;
+                stone += 20;
+                iron += 20;
+
+                $('.wood .amount').text(wood);
+                $('.stone .amount').text(stone);
+                $('.iron .amount').text(iron);
+                $('#time_to_end').html('Works !');
             },
             error: function (e, x, t) {
-                console.log('error')
+                console.log('error');
             },
         });
     }
+    second = 301;
+    waitMe();
+}
 
+/**
+ * The Timer
+ * @returns {boolean}
+ */
+function waitMe() {
+    $('#time_to_end').html('Next resources in ' + second + 's');
+    second--;
+
+    if (second <= 0) {
+        readyToRestart();
+        return false;
+    }
+
+    setTimeout(waitMe, 1000);
 }

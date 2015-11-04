@@ -16,6 +16,6 @@ chrome.runtime.onMessage.addListener(
         };
 
         //append into the trades activity toolbar
-        $('div#toolbar_activity_trades_list div.content').append(request.data);
+        $('div.tb_activities .middle').append(request.data);
     }
 );
