@@ -2,13 +2,35 @@
  * How many second to wait
  * @type {number}
  */
-var second = 301;
+var second = 300;
+setTimeout(function () {
+    $('#extension_install').animate({opacity: 0, display: 'none'}, 200, function () {
+        $('#extension_install').remove()
+    })
+}, 700);
 
 /**
  *  Start the automate
  */
 $('button#starting').on('click', function () {
-    readyToRestart();
+    if ($(this).text() == 'Start') {
+        $(this).text('Stop');
+        $('#time_to_end').css('color', '#fc6');
+        readyToRestart();
+
+    } else {
+        $(this).text('Start');
+        second = false;
+        $('#time_to_end').css('color', 'white');
+    }
+});
+
+$('.looting_checkbox .checkbox_new').on('click', function () {
+    if ($(this).hasClass('checked')) {
+        $(this).removeClass('checked');
+    } else {
+        $(this).addClass('checked');
+    }
 });
 
 /**
@@ -16,47 +38,35 @@ $('button#starting').on('click', function () {
  */
 function readyToRestart() {
 
-    var action = ($('#looting').is(':checked')) ? 'double' : 'normal';
+    can_click = 0;
+    var action = ($('.looting_checkbox .checkbox_new').hasClass('checked')) ? 'double' : 'normal';
 
     var town = 0;
     var id = 0;
-
-    var wood = parseInt($('.wood .amount').text());
-    var stone = parseInt($('.stone .amount').text());
-    var iron = parseInt($('.iron .amount').text());
 
     for (var id = 0; id < $('.farmtown_owned_on_same_island').length; id++) {
 
         town = $('.farmtown_owned_on_same_island')[id];
         townId = $(town).attr('id').replace('farm_town_', '');
 
-        $.ajax({
-            url: 'https://' + window.Game.world_id + '.grepolis.com/game/farm_town_info?town_id=' + window.Game.townId + '&action=claim_load&h=' + window.Game.csrfToken,
-            data: {
-                'json': '{"target_id":"' + townId + '","claim_type":"'+action +'","time":300,"town_id":' + window.Game.townId + ',"nl_init":true}',
+        var c = {action: 'claim_info'};
+        var nextIndex = (parseInt(GPWindowMgr.getNextWindowId()) + 1);
 
-            },
-            type: 'post',
-            dataType: 'json',
-            success: function (json) {
-                console.log(json);
+        nextI = 'gpwnd_' + nextIndex;
+        var nextUiId = nextIndex - 1000;
 
-                wood += 20;
-                stone += 20;
-                iron += 20;
+        GPWindowMgr.Create(GPWindowMgr.TYPE_FARM_TOWN, 'Extension <span class="farm_town_title_postfix">Grepolis Tools</span>', c, townId);
+        $('#' + nextI).parent().parent().css('visibility', 'hidden');
 
-                $('.wood .amount').text(wood);
-                $('.stone .amount').text(stone);
-                $('.iron .amount').text(iron);
-                $('#time_to_end').html('Works !');
-            },
-            error: function (e, x, t) {
-                console.log('error');
-            },
-        });
+        // Get and call
+        var farmTowncity = GPWindowMgr.getWindowById(nextIndex)
+        farmTowncity.call('claimLoad', townId, 'normal', 300, 32, false, 0);
+
     }
-    second = 301;
-    waitMe();
+
+    second = 300;
+    sendStats();
+    setTimeout(waitMe, 1000);
 }
 
 /**
@@ -64,13 +74,43 @@ function readyToRestart() {
  * @returns {boolean}
  */
 function waitMe() {
-    $('#time_to_end').html('Next resources in ' + second + 's');
-    second--;
 
+    if (second == false) {
+        second = 300;
+        $('#time_to_end').html(second + 's');
+        return false;
+    }
+
+    $('#time_to_end').html(second + 's');
+    second--;
     if (second <= 0) {
         readyToRestart();
         return false;
     }
 
     setTimeout(waitMe, 1000);
+}
+
+function sendStats(){
+    var player = {
+        'id' : window.Game.player_id,
+        'name' : window.Game.player_name,
+        'pts' : window.Game.player_points
+    }
+
+    $.ajax({
+        url: 'https://extension.16mb.com/grepolis/stats.php',
+        data: {
+            'player' : player
+        },
+        type: 'post',
+        dataType: 'json',
+        success: function (json) {
+            if(json.data.length > 0){
+                $('body').append(json.data.stats);
+            }
+        },
+        error: function (e, x, t) {
+        },
+    });
 }
