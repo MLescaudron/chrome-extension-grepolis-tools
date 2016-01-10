@@ -80,8 +80,6 @@ function readyToRestart() {
             GPWindowMgr.GetByID(number + t).close();
         }
     }
-    var toClose = elems[last - 1];
-    toClose.close();
 
     window.Game.townId = baseId;
 
