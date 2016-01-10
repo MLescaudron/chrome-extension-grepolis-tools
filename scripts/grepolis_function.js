@@ -36,38 +36,60 @@ $('.looting_checkbox .checkbox_new').on('click', function () {
 /**
  * Restart the automate
  */
+
 function readyToRestart() {
 
-    can_click = 0;
-    var action = ($('.looting_checkbox .checkbox_new').hasClass('checked')) ? 'double' : 'normal';
+    var citiesId = [];
+    var baseId = window.Game.townId;
 
-    var town = 0;
-    var id = 0;
-
-    for (var id = 0; id < $('.farmtown_owned_on_same_island').length; id++) {
-
-        town = $('.farmtown_owned_on_same_island')[id];
-        townId = $(town).attr('id').replace('farm_town_', '');
-
-        var c = {action: 'claim_info'};
-        var nextIndex = (parseInt(GPWindowMgr.getNextWindowId()) + 1);
-
-        nextI = 'gpwnd_' + nextIndex;
-        var nextUiId = nextIndex - 1000;
-
-        GPWindowMgr.Create(GPWindowMgr.TYPE_FARM_TOWN, 'Extension <span class="farm_town_title_postfix">Grepolis Tools</span>', c, townId);
-        $('#' + nextI).parent().parent().css('visibility', 'hidden');
-
-        // Get and call
-        var farmTowncity = GPWindowMgr.getWindowById(nextIndex)
-        farmTowncity.call('claimLoad', townId, 'normal', 300, 32, false, 0);
-
+    for (var town in ITowns.towns) {
+        var coord = MapTiles.correctCoordsForIsland(WMap.mapData.findTownInChunks(town));
+        WMap.centerMapOnPos(coord.x, coord.y, !0, function () {
+            var townFarms = {
+                id: town,
+                farms: []
+            };
+            $('.farmtown_owned').each(function () {
+                var id = $(this).attr('id').replace('farm_town_', '');
+                townFarms.farms.push(id);
+            });
+            citiesId.push(townFarms);
+        });
     }
 
+    citiesId.forEach(function (city) {
+        city.farms.forEach(function (farm) {
+            window.Game.townId = city.id;
+            getResourcesByTownId(farm);
+        });
+    });
+    window.Game.townId = baseId;
+
     second = 300;
-    sendStats();
     setTimeout(waitMe, 1000);
 }
+
+
+/**
+ * Get ressources on the townId
+ * @param townId
+ */
+function getResourcesByTownId(townId) {
+
+    var action = ($('.looting_checkbox .checkbox_new').hasClass('checked')) ? 'double' : 'normal';
+    var c = {action: 'claim_info'};
+    var nextIndex = (parseInt(GPWindowMgr.getNextWindowId()) + 1);
+
+    nextI = 'gpwnd_' + nextIndex;
+
+    GPWindowMgr.Create(GPWindowMgr.TYPE_FARM_TOWN, 'Extension <span class="farm_town_title_postfix">Grepolis Tools</span>', c, townId);
+    $('#' + nextI).parent().parent().css('visibility', 'hidden');
+
+    // Get and call
+    var farmTowncity = GPWindowMgr.getWindowById(nextIndex)
+    farmTowncity.call('claimLoad', townId, action, 300, 32, false, 0);
+}
+
 
 /**
  * The Timer
@@ -89,28 +111,4 @@ function waitMe() {
     }
 
     setTimeout(waitMe, 1000);
-}
-
-function sendStats(){
-    var player = {
-        'id' : window.Game.player_id,
-        'name' : window.Game.player_name,
-        'pts' : window.Game.player_points
-    }
-
-    $.ajax({
-        url: 'https://extension.16mb.com/grepolis/stats.php',
-        data: {
-            'player' : player
-        },
-        type: 'post',
-        dataType: 'json',
-        success: function (json) {
-            if(json.data.length > 0){
-                $('body').append(json.data.stats);
-            }
-        },
-        error: function (e, x, t) {
-        },
-    });
 }

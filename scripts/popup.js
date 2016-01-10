@@ -19,7 +19,7 @@ function onElements() {
     $('button#inject').on('click', function () {
         $.get("injection.html", function(data){
             chromeSend(data);
-            $('#grepolis_injection').html('Successfully injected !');
+            $('#grepolis_injection').html('Successfully installed !');
         });
     });
 
@@ -32,7 +32,7 @@ function onElements() {
 function chromeSend(sendData) {
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {data: sendData}, function (response) {
-           console.log('Successfully injected !');
+           console.log('Successfully installed !');
         });
     });
 }

@@ -19,4 +19,3 @@ chrome.runtime.onMessage.addListener(
         $('div.tb_activities .middle').append(request.data);
     }
 );
-

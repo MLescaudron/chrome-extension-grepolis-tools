@@ -6,3 +6,53 @@
 #starting, #looting, #time_to_end {
     display: inline-block;
 }
+
+.automate {
+    width: 100px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.activity:hover .hover_state {
+    background: none !important;
+}
+
+.automate .icon, .automate .hover_state {
+    width: 100px !important;
+}
+
+.automate .icon span {
+    font-size: 10px;
+    color: white;
+    cursor: default;
+}
+
+#looting {
+    width: 15px;
+    position: relative;
+    top: 3px;
+    cursor: pointer;
+}
+
+.looting_checkbox {
+    position: absolute;
+    margin-top: 12px;
+    color: white;
+    font-size: 10px;
+}
+
+#starting {
+    background: url(https://gpfr.innogamescdn.com/images/game/barracks/minmax_passive.png) no-repeat;
+    margin-top: 4px;
+    margin-right: 1px;
+
+    float: right;
+    width: 52px;
+    height: 23px;
+    text-align: center;
+    color: #f9e09d;
+    text-decoration: none;
+    line-height: 20px;
+
+    border: none;
+}
+

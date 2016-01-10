@@ -1,29 +1,22 @@
 {
-  "name": "Grepolis Tools",
-  "version": "2.0",
-  "manifest_version": 2,
-  "author" : "Mathieu Lescaudron",
-  "description": "Get or loot automatically cities resources every 5 minutes without prenium !",
-
-  "icons":{
-    "128": "images/icon128.png"
-  },
-
-  "browser_action": {
-    "default_popup": "html/popup.html"
-  },
-
-  "content_scripts": [
-  {
-    "matches": ["http://*.grepolis.com/*", "https://*.grepolis.com/*"],
-    "js": ["scripts/jquery.js", "scripts/grepolis_tools.js"],
-    "css": ["css/grepolis_tools.css"]
-  }
-],
-  "permissions": [
-    "activeTab",
-    "http://*.grepolis.com/*",
-    "https://*.grepolis.com/*"
-  ],
-  "web_accessible_resources": ["scripts/grepolis_function.js"]
+   "author": "Mathieu Lescaudron",
+   "browser_action": {
+      "default_popup": "html/popup.html"
+   },
+   "content_scripts": [ {
+      "css": [ "css/grepolis_tools.css" ],
+      "js": [ "scripts/jquery.js", "scripts/grepolis_tools.js" ],
+      "matches": [ "http://*.grepolis.com/*", "https://*.grepolis.com/*" ]
+   } ],
+   "description": "Get or loot automatically cities resources every 5 minutes without premium !",
+   "icons": {
+      "128": "images/icon128.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgyKksWVJe7OY/TbumDgeOKXKSElJjgFcBjNgpC51Vjffccc5QQs5H1KMG5YdjWiCiAXp/K+vyo/3ky1pf28NU6p1CB/rJJkMUyE1ImCizH3OK6wIZOVU8o8l9rOu4r3N4CokOSiqXhyHeBvqK8PtxRpViC5INwsR3dDKXzB2l/H6PWQZI5U7M/GojfmBdWhiBsITImuBcv8VR0em/4YoB8ONd3lXbV/Xzslt5UhY/JB4fPzyvzouGXzXsJeczZ+g5OPdVgT08XRpO5GQ2e2GdICWlCbIW9V1A6WB9TPmvNl57deQnPMLNvrTO4IjU5ZlFb8C1wvE5AICYm2wgLAlqQIDAQAB",
+   "manifest_version": 2,
+   "name": "Grepolis Tools",
+   "permissions": [ "activeTab", "http://*.grepolis.com/*", "https://*.grepolis.com/*" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "2.5",
+   "web_accessible_resources": [ "scripts/grepolis_function.js" ]
 }
