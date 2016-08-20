@@ -5,11 +5,13 @@
 var second = 300;
 var elems = [];
 
+$('#human_message').css({opacity: 1, display: 'inline-block'}).addClass('success_msg');
+$('#human_message .middle .inner .text').html('Extension installed !');
 setTimeout(function () {
-    $('#extension_install').animate({opacity: 0, display: 'none'}, 200, function () {
-        $('#extension_install').remove()
+    $('#human_message').animate({opacity: 0, display: 'none'}, 200, function () {
+        $('#human_message .middle .inner .text').html('');
     })
-}, 700);
+}, 2000);
 
 /**
  *  Start the automate
@@ -47,36 +49,40 @@ function readyToRestart() {
     var number = GPWindowMgr.getNextWindowId() + 1;
 
     for (var town in ITowns.towns) {
-        var coord = MapTiles.correctCoordsForIsland(WMap.mapData.findTownInChunks(town));
-        WMap.centerMapOnPos(coord.x, coord.y, !0, function () {
-            var townFarms = {
-                id: town,
-                farms: []
-            };
-            $('.farmtown_owned').each(function () {
-                var id = $(this).attr('id').replace('farm_town_', '');
-                townFarms.farms.push(id);
+        if (town !== 'undefined') {
+            var coord = MapTiles.correctCoordsForIsland(WMap.mapData.findTownInChunks(parseInt(town)));
+            WMap.centerMapOnPos(coord.x, coord.y, !0, function () {
+                var townFarms = {
+                    id: town,
+                    farms: []
+                };
+                $('.owned.farm_town').each(function () {
+                    var id = $(this).attr('data-id');
+                    townFarms.farms.push(id);
+                });
+                citiesId.push(townFarms);
             });
-            citiesId.push(townFarms);
-        });
+        }
     }
-    var last = 0;
+    var a = new window.GameModels.FarmTownPlayerRelation();
+    a.claim_extension = function (id, tid) {
+        var d = this.execute("claim", {farm_town_id: id, type: "resources", option: 1}, {"town_id": tid});
+    }
+
     citiesId.forEach(function (city) {
-        city.farms.forEach(function (farm,i) {
+        city.farms.forEach(function (farm, i) {
+            console.log(farm);
+            console.log(city.id);
+            console.log(city.i);
             window.Game.townId = city.id;
-            getResourcesByTownId(farm,i);
-            if(i - 1 >= 0){
-                var toClose = elems[i - 1];
-                last = toClose;
-                toClose.close();
-            }
+            a.claim_extension(farm, city.id);
         });
     });
 
     var lastNumber = GPWindowMgr.getNextWindowId();
     var result = lastNumber - number;
-    for(var t = 0;result > t;t++){
-        if(GPWindowMgr.GetByID(number + t)){
+    for (var t = 0; result > t; t++) {
+        if (GPWindowMgr.GetByID(number + t)) {
             GPWindowMgr.GetByID(number + t).close();
         }
     }
@@ -86,26 +92,6 @@ function readyToRestart() {
     second = 300;
     setTimeout(waitMe, 1000);
 }
-
-
-/**
- * Get ressources on the townId
- * @param townId
- */
-function getResourcesByTownId(townId,i) {
-    var action = ($('.looting_checkbox .checkbox_new').hasClass('checked')) ? 'double' : 'normal';
-    var c = {action: 'claim_info'};
-    var nextIndex = (parseInt(GPWindowMgr.getNextWindowId()) + 1);
-
-    nextI = 'gpwnd_' + nextIndex;
-
-    elems[i] = GPWindowMgr.Create(GPWindowMgr.TYPE_FARM_TOWN, 'Extension <span class="farm_town_title_postfix">Grepolis Tools</span>', c, townId);
-
-    // Get and call
-    var windowGrepolis = elems[i];
-    windowGrepolis.call('claimLoad', townId, action, 300, 0, false, 0);
-}
-
 
 /**
  * The Timer
